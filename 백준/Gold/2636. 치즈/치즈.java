@@ -33,44 +33,30 @@ public class Main {
         return x >= 0 && y >= 0 && x < N && y < M;
     }
 
-    private static void bfs(){
+    private static int bfs() {
         visit = new boolean[N][M];
         Queue<Pair> q = new LinkedList<>();
-        q.offer(new Pair(0,0));
+        q.offer(new Pair(0, 0));
         visit[0][0] = true;
 
-        while(!q.isEmpty()){
+        int cnt = 0;
+        while (!q.isEmpty()) {
             Pair now = q.poll();
-            for(int i = 0; i < deltas.length;i++){
+            for (int i = 0; i < deltas.length; i++) {
                 int nx = now.x + deltas[i][0];
                 int ny = now.y + deltas[i][1];
-                if(isIn(nx,ny) && !visit[nx][ny] && input[nx][ny] == 0){
-                    q.offer(new Pair(nx,ny));
-                    visit[nx][ny] = true;
-                    for(int j = 0 ; j < deltas.length;j++){
-                        int cx = nx + deltas[j][0];
-                        int cy = ny + deltas[j][1];
-                        if(isIn(cx,cy) && input[cx][cy] == 1){
-                            input[cx][cy] = 2;
-                        }
+                if (isIn(nx, ny) && !visit[nx][ny]) {
+                    if (input[nx][ny] == 0) {
+                        q.offer(new Pair(nx, ny));
+                    } else {
+                        input[nx][ny] = 0;
+                        cnt++;
                     }
-                }
-
-            }
-        }
-    }
-
-    private static int findMelted(){
-        int count = 0;
-        for(int i = 0; i < N;i++){
-            for(int j = 0; j < M;j++){
-                if(input[i][j] == 2){
-                    count++;
-                    input[i][j] = 0;
+                    visit[nx][ny] = true;
                 }
             }
         }
-        return count;
+        return cnt;
     }
 
     public static void main(String[] args) throws IOException {
@@ -87,20 +73,20 @@ public class Main {
         }
         int beforeMelted = 0;
         int time = 0;
+        int lastCnt = 0;
         while(true){
-            bfs();
-
-            int meltedNum = findMelted();
-            if(meltedNum == 0){
+            int cnt = bfs();
+            if(cnt != 0 ){
+                time++;
+                lastCnt = cnt;
+            }
+            else{
                 break;
             }
-            time++;
-            beforeMelted = meltedNum;
-
         }
 
 
         System.out.println(time);
-        System.out.println(beforeMelted);
+        System.out.println(lastCnt);
     }
 }
