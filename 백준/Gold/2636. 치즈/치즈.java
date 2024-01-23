@@ -1,92 +1,84 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.LinkedList;
+import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.StringTokenizer;
-
-
-
-//
 
 public class Main {
     static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     static StringTokenizer tokens;
     static StringBuilder output = new StringBuilder();
-    static int N,M;
+    static int r,c;
     static int[][] input;
+    static boolean[][] visited;
     static int[][] deltas = {{-1,0},{0,1},{1,0},{0,-1}};
-    static boolean[][] visit;
 
-    private static class Pair{
+    public static void main(String[] args) throws IOException {
+        tokens = new StringTokenizer(br.readLine());
+        r = Integer.parseInt(tokens.nextToken());
+        c = Integer.parseInt(tokens.nextToken());
+        input = new int[r][c];
+        for(int i = 0; i < r;i++){
+            tokens = new StringTokenizer(br.readLine());
+            for(int j = 0; j < c;j++){
+                input[i][j] = Integer.parseInt(tokens.nextToken());
+            }
+        }
+        int result = 0;
+        int time = 0;
+        while(true){
+            int count = bfs();
+            if(count == 0){
+                break;
+            }
+            else{
+                result = count;
+            }
+            time++;
+        }
+        output.append(time + "\n");
+        output.append(result + "\n");
+        System.out.println(output);
+
+    }
+
+    private static class Node{
         int x;
         int y;
 
-        public Pair(int x, int y) {
+        public Node(int x, int y) {
             this.x = x;
             this.y = y;
         }
     }
-
     private static boolean isIn(int x, int y){
-        return x >= 0 && y >= 0 && x < N && y < M;
+        return x >= 0 && y >= 0 && x < r && y < c;
     }
 
-    private static int bfs() {
-        visit = new boolean[N][M];
-        Queue<Pair> q = new LinkedList<>();
-        q.offer(new Pair(0, 0));
-        visit[0][0] = true;
-
-        int cnt = 0;
-        while (!q.isEmpty()) {
-            Pair now = q.poll();
-            for (int i = 0; i < deltas.length; i++) {
+    private static int bfs(){
+        int count = 0;
+        visited = new boolean[r][c];
+        Queue<Node> queue = new ArrayDeque<>();
+        queue.offer(new Node(0,0));
+        visited[0][0] = true;
+        while(!queue.isEmpty()){
+            Node now = queue.poll();
+            for(int i = 0; i < deltas.length;i++){
                 int nx = now.x + deltas[i][0];
                 int ny = now.y + deltas[i][1];
-                if (isIn(nx, ny) && !visit[nx][ny]) {
-                    if (input[nx][ny] == 0) {
-                        q.offer(new Pair(nx, ny));
-                    } else {
-                        input[nx][ny] = 0;
-                        cnt++;
+                if(isIn(nx,ny) && !visited[nx][ny]){
+                    if(input[nx][ny] == 0){
+                        queue.offer(new Node(nx,ny));
                     }
-                    visit[nx][ny] = true;
+                    else if(input[nx][ny] == 1){
+                        input[nx][ny] = 0;
+                        count++;
+                    }
+                    visited[nx][ny] = true;
                 }
             }
         }
-        return cnt;
-    }
-
-    public static void main(String[] args) throws IOException {
-        tokens = new StringTokenizer(br.readLine());
-        N = Integer.parseInt(tokens.nextToken());
-        M = Integer.parseInt(tokens.nextToken());
-        input = new int[N][M];
-        visit = new boolean[N][M];
-        for(int i = 0; i < N;i++){
-            tokens = new StringTokenizer(br.readLine());
-            for(int j = 0; j < M;j++){
-                input[i][j] = Integer.parseInt(tokens.nextToken());
-            }
-        }
-        int beforeMelted = 0;
-        int time = 0;
-        int lastCnt = 0;
-        while(true){
-            int cnt = bfs();
-            if(cnt != 0 ){
-                time++;
-                lastCnt = cnt;
-            }
-            else{
-                break;
-            }
-        }
-
-
-        System.out.println(time);
-        System.out.println(lastCnt);
+        return count;
     }
 }
