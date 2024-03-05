@@ -1,5 +1,4 @@
 
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -32,7 +31,7 @@ public class Main {
 //            System.out.println(i+" i ");
             int disSum = dis[i];
             int next = i+1;
-            while(fuel[i] < fuel[next]){
+            while(fuel[i] < fuel[next] && next < fuel.length-1){
                 disSum+=dis[next];
                 next++;
             }
