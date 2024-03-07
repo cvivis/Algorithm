@@ -1,4 +1,3 @@
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -6,6 +5,10 @@ import java.util.Arrays;
 import java.util.StringTokenizer;
 // 홀수일때는 최댓값을 빼고 나머지에서 작은 값과 큰값을 비교해 MAX비교
 // 짝수일때는 가장 큰 값 + 가장 작은값의 쌍중 제일 큰값이 답
+// 1,2,3,100,101 -> 101 
+// 1,1,6,6,6 (1+6,6) -> 7 
+// 0,1,2,3,4,5,6,7 
+// 1 1000000000 1000000000 1000000000 
 public class Main {
     static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     static StringTokenizer tokens;
@@ -27,7 +30,7 @@ public class Main {
             if(N == 1){
                 System.out.println(input[0]);
             }else{
-                System.out.println(Math.max(find(N-2),input[N-1]));
+                System.out.println(Math.max(find (N-2),input[N-1]));
             }
         }
     }
