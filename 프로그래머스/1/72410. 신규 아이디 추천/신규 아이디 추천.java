@@ -18,7 +18,7 @@ class Solution {
         return new_id.toLowerCase();
     }
     private static String step2(String new_id){
-        return new_id.replaceAll("[^\\w\\-_.]*", "");
+        return new_id.replaceAll("[^0-9a-z-_.]", "");
     }
     private static String step3(String new_id){
         return new_id.replaceAll("\\.{2,}",".");
