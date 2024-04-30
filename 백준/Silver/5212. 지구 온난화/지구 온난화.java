@@ -1,73 +1,112 @@
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayDeque;
+import java.util.Arrays;
+import java.util.Queue;
+import java.util.StringTokenizer;
 
+
+// R+2 , C+2로 후 외곽을 만들어주고 계산하니 4% 반례 -> 바다로 BFS 할려고 했더니 섬으로 바다가 끊어져 있을 수 있었음.
+// 1. R,C로 수정후 풀기 , 2. 모든 바다를 다 하도록 하기
 public class Main {
-    static int[] dx = {0, 0, 1, -1};
-    static int[] dy = {1, -1, 0, 0};
-    static char[][] graph; // 지도
-    static int count; // 섬 근처의 바다의 수
-    public static void main(String[] args) throws Exception {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-        StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer tokens;
+    static StringBuilder output = new StringBuilder();
+    static int R,C;
+    static char[][] input;
+    static int[][] deltas = {{-1,0},{0,1},{1,0},{0,-1}};
+    static boolean[][] visit;
+    static int[][] countSee;
 
-        int R = Integer.parseInt(st.nextToken());
-        int C = Integer.parseInt(st.nextToken());
-        graph = new char[R][C];
-        int up = R; // 지도의 가장 위
-        int down = 0; // 지도의 가장 아래
-        int left = C; // 지도의 가장 왼쪽
-        int right = 0; // 지도의 가장 아래쪽
-
-        for (int i = 0; i < R; i++) {
-            String input = br.readLine();
-            for (int j = 0; j < C; j++) {
-                graph[i][j] = input.charAt(j);
+    public static void main(String[] args) throws IOException {
+        tokens = new StringTokenizer(br.readLine());
+        R = Integer.parseInt(tokens.nextToken());
+        C = Integer.parseInt(tokens.nextToken());
+        input = new char[R+2][C+2];
+        visit = new boolean[R+2][C+2];
+        countSee = new int[R+2][C+2];
+        for(int i = 0 ; i < input.length;i++){
+            Arrays.fill(input[i],'.');
+        }
+        for(int i = 1; i <= R;i++){
+            String str = br.readLine();
+            for(int j = 1; j <= C;j++){
+                input[i][j] = str.charAt(j-1);
             }
         }
-
-        for (int i = 0; i < R; i++) {
-            for (int j = 0; j < C; j++) {
-                if (graph[i][j] == 'X') {
-                    count = 0;
-                    for (int k = 0; k < 4; k++) { // 우 좌 하 상 순서 4방 탐색
-                        int nx = i + dx[k];
-                        int ny = j + dy[k];
-                        if (nx >= 0 && ny >= 0 && nx < R && ny < C) { // 지도 안에 있을경우
-                            if (graph[nx][ny] == '.') { // 근처가 바다일 경우
-                                count++;
-                            }
-                        } else { // 지도의 바깥부분도 바다
-                            count++;
-                        }
-                    }
-                    if (count >= 3) { // 바다가 3면 이상일 경우
-                        graph[i][j] = 'S'; // 임의의 값 S 로 변경
-                    }
-                }
-                if (graph[i][j] == 'X') { // 지도의 가장 위, 아래, 왼쪽, 오른쪽 의 좌표를 갱신
-                    up = Math.min(up, i);
-                    down = Math.max(down, i);
-                    left = Math.min(left, j);
-                    right = Math.max(right, j);
+        for(int i = 0; i < R+2;i++){
+            for(int j = 0; j < C+2;j++){
+                if(input[i][j] == '.' && !visit[i][j]){
+                    bfs(i , j);
                 }
             }
         }
+        after50(countSee);
+        printMap();
+    }
 
-        // 새로운 지도를 그려줌
-        for (int i = up; i <= down; i++) {
-            for (int j = left; j <= right; j++) {
-                char c = graph[i][j];
-                if (c == 'X') {
-                    bw.write(c);
-                } else {
-                    bw.write('.');
+    static class Node{
+        int x;
+        int y;
+
+        public Node(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
+    static boolean isIn(int x , int y){
+        return x >= 0 && y >= 0 && x < R+2 && y < C+2;
+    }
+    static void bfs(int x , int y){
+        Queue<Node> queue = new ArrayDeque<>();
+        
+        queue.offer(new Node(x,y));
+        visit[x][y] = true;
+        while(!queue.isEmpty()){
+            Node now = queue.poll();
+            for(int i = 0; i < deltas.length;i++){
+                int nx = now.x + deltas[i][0];
+                int ny = now.y + deltas[i][1];
+                if(isIn(nx,ny) && !visit[nx][ny] && input[nx][ny] == '.'){
+                    visit[nx][ny] = true;
+                    queue.offer(new Node(nx,ny));
+                }
+                else if(isIn(nx,ny) && input[nx][ny] == 'X'){
+                    countSee[nx][ny]++;
                 }
             }
-            bw.write("\n");
         }
-        bw.flush();
-        bw.close();
-        br.close();
+    }
+    private static void after50(int[][] countSee){
+        for(int i = 1 ; i <= R;i++){
+            for(int j = 1; j <= C;j++){
+                if(countSee[i][j] >= 3 ){
+                    input[i][j] = '.';
+                }
+            }
+        }
+    }
+    private static void printMap(){
+        int minX = R, maxX = 0, minY = C,maxY = 0;
+        for(int i = 1 ; i <= R;i++){
+            for(int j = 1; j <= C;j++){
+                if(input[i][j] == 'X' ){
+                    minX = Math.min(minX,i);
+                    maxX = Math.max(maxX,i);
+                    minY = Math.min(minY,j);
+                    maxY = Math.max(maxY,j);
+                }
+            }
+        }
+        for(int i = minX; i <= maxX;i++){
+            for(int j = minY; j <= maxY;j++){
+                System.out.print(input[i][j]);
+            }
+            System.out.println();
+        }
+  //      if(minX > maxX || minY > maxY){
+   //         System.out.println('X');
+     //   }
     }
 }
