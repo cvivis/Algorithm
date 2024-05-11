@@ -1,11 +1,10 @@
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
-
+// 각 리스트의 최대 오리 글자의 숫자를 갱신하느 방식
 public class Main {
     static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     static StringTokenizer tokens;
@@ -19,21 +18,16 @@ public class Main {
         for(int i = 0; i < str.length();i++){
 //            System.out.println(quacks);
             char sound = str.charAt(i);
-            if(sound == 'q'){
+            if(sound == 'q'){ // 새 오리 추가
                 quacks.add(q);
             }
-            else{
+            else{ // 다른 경우에는 
                 int num = quackNum(sound);
-//                if(num == -1){
-//                    result = -1;
-//                    break;
-//                }
                 boolean trigger = false;
-//                System.out.println(sound+": ");
                 for(int j = 0 ; j < quacks.size();j++){
-                    if(quacks.get(j) == num-1){
+                    if(quacks.get(j) == num-1){ // 나머지는 오리 최대값 갱신 
                        quacks.set(j,num);
-                       if(quacks.get(j) == k){
+                       if(quacks.get(j) == k){ // 마지막이면 오리 사이즈 갱신
                            result = Math.max(result,quacks.size());
                            quacks.remove(j);
                        }
@@ -41,8 +35,7 @@ public class Main {
                        break;
                     }
                 }
-                if(trigger)continue;
-//                System.out.println(quacks);
+                if(trigger)continue; // 순서에 맞지 않는 오리 소리
                 result = -1;
                 break;
             }
@@ -50,6 +43,7 @@ public class Main {
         if(quacks.size()>0)result = -1;
         System.out.println(result);
     }
+    // c -> 내가 지정한 int 형 변환
     private static int quackNum(char sound){
         int result = -1;
         switch(sound){
