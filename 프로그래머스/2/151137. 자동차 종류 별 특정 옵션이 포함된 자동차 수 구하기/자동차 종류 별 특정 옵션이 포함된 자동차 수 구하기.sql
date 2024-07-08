@@ -1,0 +1,23 @@
+# sELECT CAR_TYPE, COUNT(*) AS CARS
+# FROM (
+#     SELECT CAR_TYPE,
+#            (CASE WHEN OPTIONS LIKE '%통풍시트%' THEN 1 ELSE 0 END +
+#             CASE WHEN OPTIONS LIKE '%열선시트%' THEN 1 ELSE 0 END +
+#             CASE WHEN OPTIONS LIKE '%가죽시트%' THEN 1 ELSE 0 END) AS OPTIONS_COUNT
+#     FROM CAR_RENTAL_COMPANY_CAR
+# ) AS SUBQUERY
+# WHERE OPTIONS_COUNT >= 2
+# GROUP BY CAR_TYPE
+# ORDER BY CAR_TYPE ASC;
+-- 코드를 입력하세요
+select CAR_TYPE ,sum(cnt) as CARS from (SELECT CAR_TYPE,
+    (CASE 
+        WHEN OPTIONS LIKE '%통풍시트%' THEN 1
+        WHEN OPTIONS LIKE '%열선시트%' THEN 1
+        WHEN OPTIONS LIKE '%가죽시트%' THEN 1
+        ELSE 0
+    END) as cnt
+FROM CAR_RENTAL_COMPANY_CAR) as A
+group by CAR_TYPE
+order by CAR_TYPE
+;
