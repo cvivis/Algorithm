@@ -1,4 +1,3 @@
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -46,10 +45,11 @@ public class Main {
 //                if(dp[i-1][j] != 0){
 //                    System.out.println(dp[i-1][j] + " 확인중 ");
 //                    dp[i][j] = Math.max(dp[i-1][j],dp[i][j]);
+                dp[i][j] = Math.max(dp[i][j], dp[i - 1][j]);
                 if(j-cost[i] >= 0){
                     dp[i][j] = Math.max(dp[i][j],dp[i-1][j-cost[i]] + memory[i]);
                 }
-                dp[i][j] = Math.max(dp[i][j], dp[i - 1][j]);
+                
             }
 //            for(int[] arr : dp){
 //                System.out.println(Arrays.toString(arr));
