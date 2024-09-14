@@ -29,7 +29,6 @@ public class Solution {
                 min = Math.min(min,Math.abs(leafCount[y] - temp));
             }
         }
-//        System.out.println(min);
         return min;
     }
     public static void findLeaf(int n , int[][] wires){
@@ -42,24 +41,18 @@ public class Solution {
         }
         parentsPath[n] = -1;
         dfs(n,n);
-//        System.out.println(Arrays.toString(parentsPath));
-        System.out.println(Arrays.toString(leafCount));
     }
     public static int dfs(int  n, int x){
         int count = 1;
         for(int i = 1; i <= n;i++){
             if(visit[x][i]){
-//                count++;
                 visit[x][i] = false;
                 visit[i][x] = false;
                 count += dfs(n,i);
                 parentsPath[i] = x;
             }
         }
-
         leafCount[x] = count;
         return count;
-//        allCount += count;
-//        System.out.println(x + " : "+ allCount);
     }
 }
